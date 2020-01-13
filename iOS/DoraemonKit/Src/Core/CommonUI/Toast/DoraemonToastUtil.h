@@ -6,10 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface DoraemonToastUtil : NSObject
-
-+ (void)showToast:(NSString *)text;
 
 + (void)showToast:(NSString *)text inView:(UIView *)superView;
 

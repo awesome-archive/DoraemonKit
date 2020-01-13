@@ -41,19 +41,19 @@
 - (void)commonInit {
     self.title = DoraemonLocalizedString(@"Crash查看");
     
-    self.switchView = [[DoraemonCellSwitch alloc] initWithFrame:CGRectMake(0, self.bigTitleView.doraemon_bottom, self.view.doraemon_width, kDoraemonSizeFrom750(104))];
+    self.switchView = [[DoraemonCellSwitch alloc] initWithFrame:CGRectMake(0, self.bigTitleView.doraemon_bottom, self.view.doraemon_width, kDoraemonSizeFrom750_Landscape(104))];
     [self.switchView renderUIWithTitle:DoraemonLocalizedString(@"Crash日志收集开关") switchOn:[[DoraemonCacheManager sharedInstance] crashSwitch]];
     [self.switchView needDownLine];
     self.switchView.delegate = self;
     [self.view addSubview:self.switchView];
     
-    self.checkBtn = [[DoraemonCellButton alloc] initWithFrame:CGRectMake(0, self.switchView.doraemon_bottom, self.view.doraemon_width, kDoraemonSizeFrom750(104))];
+    self.checkBtn = [[DoraemonCellButton alloc] initWithFrame:CGRectMake(0, self.switchView.doraemon_bottom, self.view.doraemon_width, kDoraemonSizeFrom750_Landscape(104))];
     [self.checkBtn renderUIWithTitle:DoraemonLocalizedString(@"查看Crash日志")];
     self.checkBtn.delegate = self;
     [self.checkBtn needDownLine];
     [self.view addSubview:self.checkBtn];
     
-    self.clearBtn = [[DoraemonCellButton alloc] initWithFrame:CGRectMake(0, self.checkBtn.doraemon_bottom, self.view.doraemon_width, kDoraemonSizeFrom750(104))];
+    self.clearBtn = [[DoraemonCellButton alloc] initWithFrame:CGRectMake(0, self.checkBtn.doraemon_bottom, self.view.doraemon_width, kDoraemonSizeFrom750_Landscape(104))];
     [self.clearBtn renderUIWithTitle:DoraemonLocalizedString(@"一键清理Crash日志")];
     self.clearBtn.delegate = self;
     [self.clearBtn needDownLine];
@@ -66,17 +66,12 @@
 
 - (void)changeSwitchOn:(BOOL)on sender:(id)sender{
     __weak typeof(self) weakSelf = self;
-    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:DoraemonLocalizedString(@"提示") message:DoraemonLocalizedString(@"该功能需要重启App才能生效") preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:DoraemonLocalizedString(@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-         weakSelf.switchView.switchView.on = !on;
-    }];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:DoraemonLocalizedString(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [DoraemonAlertUtil handleAlertActionWithVC:self okBlock:^{
         [[DoraemonCacheManager sharedInstance] saveCrashSwitch:on];
         exit(0);
+    } cancleBlock:^{
+        weakSelf.switchView.switchView.on = !on;
     }];
-    [alertController addAction:cancelAction];
-    [alertController addAction:okAction];
-    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark DoraemonCellButtonDelegate

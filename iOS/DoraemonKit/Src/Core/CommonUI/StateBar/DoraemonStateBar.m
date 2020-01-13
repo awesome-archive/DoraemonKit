@@ -29,11 +29,11 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.windowLevel = UIWindowLevelStatusBar + 100.f;
+        self.windowLevel = UIWindowLevelStatusBar + 1.f;
         self.backgroundColor = [UIColor doraemon_colorWithString:@"#427dbe"];
         
         _contentLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _contentLabel.font = [UIFont systemFontOfSize:kDoraemonSizeFrom750(20)];
+        _contentLabel.font = [UIFont systemFontOfSize:kDoraemonSizeFrom750_Landscape(20)];
         _contentLabel.textColor = [UIColor whiteColor];
         _contentLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_contentLabel];
@@ -52,8 +52,12 @@
 
 - (void)show{
     self.hidden = NO;
-    self.frame = CGRectMake(0, 0, DoraemonScreenWidth, IPHONE_STATUSBAR_HEIGHT);
-    _contentLabel.frame = CGRectMake(0, 0, DoraemonScreenWidth, IPHONE_STATUSBAR_HEIGHT);
+    self.frame = CGRectMake(0, 0, DoraemonScreenWidth, IPHONE_STATUSBAR_HEIGHT + 15);
+    if (IS_IPHONE_X_Series) {
+        _contentLabel.frame = CGRectMake(0, self.doraemon_height-25, DoraemonScreenWidth, 20);
+    } else {
+        _contentLabel.frame = CGRectMake(0, self.doraemon_height-IPHONE_STATUSBAR_HEIGHT, DoraemonScreenWidth, IPHONE_STATUSBAR_HEIGHT);
+    }
 }
 
 - (void)hide{

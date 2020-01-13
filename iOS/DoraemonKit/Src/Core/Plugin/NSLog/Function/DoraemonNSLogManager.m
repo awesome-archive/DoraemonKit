@@ -6,7 +6,11 @@
 //
 
 #import "DoraemonNSLogManager.h"
-#import <fishhook/fishhook.h>
+#if __has_include(<fishhook/fishhook.h>)
+#include <fishhook/fishhook.h>
+#else
+#include "fishhook.h"
+#endif
 #import "DoraemonStateBar.h"
 
 //函数指针，用来保存原始的函数的地址
@@ -22,7 +26,8 @@ void myNSLog(NSString *format, ...){
     
     [[DoraemonNSLogManager sharedInstance] addNSLog:str];
     //再调用原来的nslog
-    old_nslog(str);
+    //old_nslog(str);
+    old_nslog(@"%@",str);
 }
 
 
@@ -68,9 +73,11 @@ void myNSLog(NSString *format, ...){
     }
     [_dataArray addObject:model];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[DoraemonStateBar shareInstance] renderUIWithContent:[NSString stringWithFormat:@"[NSLog] : %@",log] from:DoraemonStateBarFromNSLog];
-    });
+    if (@available(iOS 13.0, *)) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[DoraemonStateBar shareInstance] renderUIWithContent:[NSString stringWithFormat:@"[NSLog] : %@",log] from:DoraemonStateBarFromNSLog];
+        });
+    }
 
 }
 
